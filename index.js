@@ -6,7 +6,7 @@ const port = process.env.PORT || 3001;
 
 const app = express();
 
-const INTERNAL_SERVER_ERROR = "Internal server error";
+const INTERNAL_SERVICE_ERROR = "Internal service error";
 const PROMPT_IS_REQUIRED = "Prompt is required";
 
 app.use(bodyParser.json());
@@ -26,14 +26,14 @@ app.post("/api/v1/prompt", async (req, res) => {
     console.log({ prompt, imageUrl });
     const imageIsReady = await waitUntilImageIsReady(imageUrl);
     if (!imageIsReady) {
-      console.log(INTERNAL_SERVER_ERROR);
-      res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+      console.log(INTERNAL_SERVICE_ERROR);
+      res.status(500).json({ error: INTERNAL_SERVICE_ERROR });
       return;
     }
     res.status(200).json({ imageUrl });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+    res.status(500).json({ error: INTERNAL_SERVICE_ERROR });
   }
 });
 
