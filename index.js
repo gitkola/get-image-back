@@ -3,10 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import axios from "axios";
 
-const DEFAULT_IMAGE_WIDTH = 640;
-const DEFAULT_IMAGE_HEIGHT = 480;
-
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 const app = express();
 
 const INTERNAL_SERVICE_ERROR = "Internal service error";
@@ -23,8 +20,8 @@ app.post("/api/v1/prompt", async (req, res) => {
       res.status(400).json({ error: PROMPT_IS_REQUIRED });
       return;
     }
-    const { prompt, size } = body;
-    const imageUrl = getImageUrl(prompt, size);
+    const { prompt } = body;
+    const imageUrl = getImageUrl(prompt);
     console.log({ prompt, imageUrl });
     const imageIsReady = await waitUntilImageIsReady(imageUrl);
     if (!imageIsReady) {
@@ -44,9 +41,9 @@ app.listen(port, () => console.log(`get-image-back on port: ${port}`));
 
 //-------------------------------------------------Utils-------------------------------------------------//
 
-function getImageUrl(prompt, size = { width: DEFAULT_IMAGE_WIDTH, height: DEFAULT_IMAGE_HEIGHT }) {
+function getImageUrl(prompt) {
   const encodedPrompt = encodeURIComponent(prompt);
-  return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${size?.width}&height=${size?.height}&nologo=poll&nofeed=yes`;
+  return `https://image.pollinations.ai/prompt/${encodedPrompt}`;
 }
 
 async function waitUntilImageIsReady(url) {
